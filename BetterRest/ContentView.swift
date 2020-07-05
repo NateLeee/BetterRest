@@ -24,14 +24,29 @@ struct ContentView: View {
                 Text("Desired amount of sleep")
                     .font(.headline)
                 Stepper(value: $sleepAmount, in: 4...12, step: 0.5) {
-                    Text("\(sleepAmount, specifier: "%g")")
+                    Text("\(sleepAmount, specifier: "%g") hours")
+                }
+                
+                Text("Daily coffee intake")
+                    .font(.headline)
+                Stepper(value: $coffeeAmount, in: 0...10, step: 1) {
+                    Text("\(coffeeAmount) \(coffeeAmount > 1 ? "cups" : "cup")")
                 }
                 
             }
             .navigationBarTitle("Better Rest")
+            .navigationBarItems(trailing:
+                Button(action: calculateBedtime) {
+                    Text("Calculate")
+                }
+            )
         }
     }
     
+    
+    func calculateBedtime() {
+        print("calculateBedtime")
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {
