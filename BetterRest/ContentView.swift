@@ -9,20 +9,17 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var sleepAmount = 8.0
     @State private var wakeUp = Date()
     
     var body: some View {
-        VStack {
-            Stepper(value: $sleepAmount, in: 4...12, step: 0.5) {
-                Text("\(sleepAmount, specifier: "%.1f")")
-            }
-            
-            DatePicker("Please enter a date", selection: $wakeUp, in: Date()..., displayedComponents: .hourAndMinute)
-                .labelsHidden()
-            
-        }
+        let now = Date()
+        let tomorrow = Date().addingTimeInterval(86400)
+        let range = now ... tomorrow
+        
+        return DatePicker("Please enter a date", selection: $wakeUp, in: range, displayedComponents: .hourAndMinute)
+            .labelsHidden()
     }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
