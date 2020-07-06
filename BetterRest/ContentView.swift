@@ -32,7 +32,6 @@ struct ContentView: View {
     
     static private var sleepAmounts = ContentView.sleepAmountsAtDisposal
     
-    
     @State private var wakeUp = defaultWakeTime
     @State private var sleepAmountIndex = 7
     @State private var coffeeAmount = 1
@@ -41,6 +40,7 @@ struct ContentView: View {
     @State private var alertMessage = ""
     @State private var showingAlert = false
     
+    @State private var bedTime: String = "Unknown"
     
     var body: some View {
         NavigationView {
@@ -65,20 +65,17 @@ struct ContentView: View {
                         Text("\(coffeeAmount) \(coffeeAmount > 1 ? "cups" : "cup")")
                     }
                 }
+                
+                Section(header: Text("Suggestion")) {
+                    Text("The estimated bed time is \(calculateBedtime())")
+                        .font(.headline)
+                }
             }
             .navigationBarTitle("Better Rest")
-            .navigationBarItems(trailing:
-                Button(action: calculateBedtime) {
-                    Text("Calculate")
-                }
-            )
-                .alert(isPresented: $showingAlert) { () -> Alert in
-                    Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-            }
         }
     }
     
-    func calculateBedtime() {
+    func calculateBedtime() -> String {
         let model = SleepCalculator()
         
         let components = Calendar.current.dateComponents([.hour, .minute], from: wakeUp)
@@ -87,21 +84,23 @@ struct ContentView: View {
         let minute = (components.minute ?? 0) * 60
         
         do {
-            let prediction = try model.prediction(wake: Double(hour + minute), estimatedSleep: ContentView.sleepAmounts[sleepAmountIndex], coffee: Double(coffeeAmount))
+            let prediction = try model.prediction(
+                wake: Double(hour + minute),
+                estimatedSleep: ContentView.sleepAmounts[sleepAmountIndex],
+                coffee: Double(coffeeAmount)
+            )
             
             let sleepTime = wakeUp - prediction.actualSleep
             let df = DateFormatter()
             df.dateFormat = "h:mm a"
             
-            alertTitle = "The estimated bed time is..."
-            alertMessage = df.string(from: sleepTime)
+            let result = df.string(from: sleepTime)
+            return result
             
-        } catch(let error) {
-            alertTitle = "Error!"
-            alertMessage = error.localizedDescription
+        } catch {
         }
         
-        showingAlert = true
+        return "Unknown"
     }
 }
 
