@@ -27,22 +27,22 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                Text("When do you want to wake up?")
-                    .font(.headline)
-                DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
-                    .labelsHidden()
-                
-                Text("Desired amount of sleep")
-                    .font(.headline)
-                Stepper(value: $sleepAmount, in: 4...12, step: 0.5) {
-                    Text("\(sleepAmount, specifier: "%g") hours")
+            Form {
+                Section(header: Text("When do you want to wake up?")) {
+                    DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
+                        .labelsHidden()
                 }
                 
-                Text("Daily coffee intake")
-                    .font(.headline)
-                Stepper(value: $coffeeAmount, in: 0...10, step: 1) {
-                    Text("\(coffeeAmount) \(coffeeAmount > 1 ? "cups" : "cup")")
+                Section(header: Text("Desired amount of sleep")) {
+                    Stepper(value: $sleepAmount, in: 4...12, step: 0.5) {
+                        Text("\(sleepAmount, specifier: "%g") hours")
+                    }
+                }
+                
+                Section(header: Text("Daily coffee intake")) {
+                    Stepper(value: $coffeeAmount, in: 0...10, step: 1) {
+                        Text("\(coffeeAmount) \(coffeeAmount > 1 ? "cups" : "cup")")
+                    }
                 }
             }
             .navigationBarTitle("Better Rest")
@@ -56,7 +56,6 @@ struct ContentView: View {
             }
         }
     }
-    
     
     func calculateBedtime() {
         let model = SleepCalculator()
@@ -73,7 +72,7 @@ struct ContentView: View {
             let df = DateFormatter()
             df.dateFormat = "h:mm a"
             
-            alertTitle = "The estimated time to go to bed is..."
+            alertTitle = "The estimated bed time is..."
             alertMessage = df.string(from: sleepTime)
             
         } catch(let error) {
