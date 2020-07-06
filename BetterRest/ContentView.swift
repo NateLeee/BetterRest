@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    static var defaultWakeTime: Date {
+    static private var defaultWakeTime: Date {
         var dateComponents = DateComponents()
         dateComponents.hour = 7
         dateComponents.minute = 30
@@ -17,9 +17,21 @@ struct ContentView: View {
         return Calendar.current.date(from: dateComponents) ?? Date()
     }
     
-    static private var sleepAmounts: [Double] {
-        return [4.0, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5]
+    static private var sleepAmountsAtDisposal: [Double] {
+        var value = 4.0
+        var result = [value]
+        
+        repeat {
+            value += 0.25
+            result.append(value)
+        } while (value < 12)
+        
+        print("🎯")
+        return result
     }
+    
+    static private var sleepAmounts = ContentView.sleepAmountsAtDisposal
+    
     
     @State private var wakeUp = defaultWakeTime
     @State private var sleepAmountIndex = 7
