@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var wakeUp = Date()
+    @State private var wakeUp = defaultWakeTime
     @State private var sleepAmount = 8.0
     @State private var coffeeAmount = 1
     
@@ -17,6 +17,13 @@ struct ContentView: View {
     @State private var alertMessage = ""
     @State private var showingAlert = false
     
+    static var defaultWakeTime: Date {
+        var dateComponents = DateComponents()
+        dateComponents.hour = 7
+        dateComponents.minute = 30
+        
+        return Calendar.current.date(from: dateComponents) ?? Date()
+    }
     
     var body: some View {
         NavigationView {
@@ -66,15 +73,15 @@ struct ContentView: View {
             let df = DateFormatter()
             df.dateFormat = "h:mm a"
             
-            alertTitle = "The estimated time to go to bed is"
+            alertTitle = "The estimated time to go to bed is..."
             alertMessage = df.string(from: sleepTime)
-            showingAlert = true
             
         } catch(let error) {
             alertTitle = "Error!"
             alertMessage = error.localizedDescription
-            showingAlert = true
         }
+        
+        showingAlert = true
     }
 }
 
