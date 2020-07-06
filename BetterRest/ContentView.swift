@@ -9,14 +9,6 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var wakeUp = defaultWakeTime
-    @State private var sleepAmount = 8.0
-    @State private var coffeeAmount = 1
-    
-    @State private var alertTitle = ""
-    @State private var alertMessage = ""
-    @State private var showingAlert = false
-    
     static var defaultWakeTime: Date {
         var dateComponents = DateComponents()
         dateComponents.hour = 7
@@ -24,6 +16,19 @@ struct ContentView: View {
         
         return Calendar.current.date(from: dateComponents) ?? Date()
     }
+    
+    static private var sleepAmounts: [Double] {
+        return [4.0, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5]
+    }
+    
+    @State private var wakeUp = defaultWakeTime
+    @State private var sleepAmountIndex = 7
+    @State private var coffeeAmount = 1
+    
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
+    @State private var showingAlert = false
+    
     
     var body: some View {
         NavigationView {
@@ -34,9 +39,13 @@ struct ContentView: View {
                 }
                 
                 Section(header: Text("Desired amount of sleep")) {
-                    Stepper(value: $sleepAmount, in: 4...12, step: 0.5) {
-                        Text("\(sleepAmount, specifier: "%g") hours")
+                    Picker(selection: $sleepAmountIndex, label: Text("\(sleepAmountIndex) hours")) {
+                        ForEach(0 ..< ContentView.sleepAmounts.count) {
+                            Text("\(ContentView.sleepAmounts[$0], specifier: "%g") hours")
+                        }
                     }
+                    .labelsHidden()
+                    .pickerStyle(WheelPickerStyle())
                 }
                 
                 Section(header: Text("Daily coffee intake")) {
@@ -66,7 +75,7 @@ struct ContentView: View {
         let minute = (components.minute ?? 0) * 60
         
         do {
-            let prediction = try model.prediction(wake: Double(hour + minute), estimatedSleep: sleepAmount, coffee: Double(coffeeAmount))
+            let prediction = try model.prediction(wake: Double(hour + minute), estimatedSleep: ContentView.sleepAmounts[sleepAmountIndex], coffee: Double(coffeeAmount))
             
             let sleepTime = wakeUp - prediction.actualSleep
             let df = DateFormatter()
