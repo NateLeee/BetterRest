@@ -31,7 +31,7 @@ struct ContentView: View {
                     .font(.headline)
                 Stepper(value: $coffeeAmount, in: 0...10, step: 1) {
                     Text("\(coffeeAmount) \(coffeeAmount > 1 ? "cups" : "cup")")
-                }
+                } 
                 
             }
             .navigationBarTitle("Better Rest")
