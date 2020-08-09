@@ -64,6 +64,7 @@ struct ContentView: View {
                     Stepper(value: $coffeeAmount, in: 0...10, step: 1) {
                         Text("\(coffeeAmount) \(coffeeAmount > 1 ? "cups" : "cup")")
                     }
+                    .accessibility(value: Text("\(coffeeAmount) \(coffeeAmount > 1 ? "cups" : "cup"), max is 10."))
                 }
                 
                 Section(header: Text("Suggestion")) {
